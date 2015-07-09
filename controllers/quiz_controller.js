@@ -5,7 +5,7 @@ exports.question = function(req, res) {
 
 // GET quizes/answer
 exports.answer = function(req, res) {
-	if (req.query.respuesta.trim().match(/^roma?/i)) {
+	if (req.query.respuesta.trim().match(/^roma$/i)) {
 		res.render('quizes/answer', {respuesta: 'Correcto'});
 	} else {
 		res.render('quizes/answer', {respuesta: 'Incorrecto'});

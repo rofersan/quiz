@@ -14,3 +14,8 @@ h2 span, section h3 {
 footer, input {
 	font-size: large;
 }
+
+img {
+	width: 60%;
+	height: 60%;
+}
