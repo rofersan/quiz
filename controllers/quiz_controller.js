@@ -2,7 +2,6 @@ var models = require('../models/models.js');
 
 // Autoload - Se ejecuta si la url contiene ":quizId"
 exports.load = function(req, res, next, quizId) {
-	console.log('AUtoload...');
 	models.Quiz.find(quizId).then(function (quiz) {
 		if (quiz) {
 			req.quiz = quiz;
@@ -17,7 +16,14 @@ exports.load = function(req, res, next, quizId) {
 
 // GET /quizes
 exports.index = function(req, res) {
-	models.Quiz.findAll().then(function (quizes) {
+	var query, percent = '%';
+	if (!!req.query.search && req.query.search.trim() !== '') {
+		query = {
+			where: ['pregunta like ?', percent + req.query.search.trim().replace(/\s/g, percent) + percent],
+			order: [['pregunta', 'ASC']]
+		};
+	}
+	models.Quiz.findAll(query).then(function (quizes) {
 		res.render('quizes/index.ejs', {quizes: quizes});
 	});
 };
