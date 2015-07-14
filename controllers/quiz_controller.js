@@ -65,7 +65,7 @@ exports.new = function(req, res) {
 	});
 };
 
-// GET /quizes/create
+// POST /quizes/create
 exports.create = function(req, res) {
 	var quiz = models.Quiz.build(req.body.quiz);
 	quiz.validate().then(function(err){
@@ -82,8 +82,38 @@ exports.create = function(req, res) {
 					res.redirect('/quizes');
 				});
 		}
+	});	
+};
+
+// GET /quizes/{uuid}/edit
+exports.edit = function(req, res) {
+	console.log('****Editar');
+	var quiz = req.quiz;
+	res.render('quizes/edit', {
+		quiz: quiz,
+		errors: []
 	});
+};
 
+// PUT /quizes/{uuid}}
+exports.update = function(req, res) {
+	console.log('****Actualizar');
+	req.quiz.pregunta = req.body.quiz.pregunta;
+	req.quiz.respuesta = req.body.quiz.respuesta;
 
-	
+	req.quiz.validate().then(function(err){
+		if(err) {
+			res.render('quizes/edit', {
+				quiz: req.quiz,
+				errors: err.errors
+			});
+		} else {
+			req.quiz.save(
+				{
+					fields: ["pregunta", "respuesta"]	
+				}).then(function() {
+					res.redirect('/quizes');
+				});
+		}
+	});	
 };
