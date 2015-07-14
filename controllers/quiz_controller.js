@@ -87,7 +87,6 @@ exports.create = function(req, res) {
 
 // GET /quizes/{uuid}/edit
 exports.edit = function(req, res) {
-	console.log('****Editar');
 	var quiz = req.quiz;
 	res.render('quizes/edit', {
 		quiz: quiz,
@@ -97,7 +96,6 @@ exports.edit = function(req, res) {
 
 // PUT /quizes/{uuid}}
 exports.update = function(req, res) {
-	console.log('****Actualizar');
 	req.quiz.pregunta = req.body.quiz.pregunta;
 	req.quiz.respuesta = req.body.quiz.respuesta;
 
@@ -116,4 +114,13 @@ exports.update = function(req, res) {
 				});
 		}
 	});	
+};
+
+// DELETE /quizes/{uuid}
+exports.destroy = function(req, res) {
+	req.quiz.destroy().then(function() {
+		res.redirect('/quizes');
+	}).catch(function(error) {
+		next(error);
+	});
 };
