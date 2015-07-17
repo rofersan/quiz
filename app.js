@@ -39,6 +39,28 @@ app.use(function(req, res, next) {
     next();
 });
 
+// Autologout
+app.use(function(req, res, next) {
+    // Comprobamos si hay usuario logado para comenzar la gestion del autologout
+    if (req.session.user) {
+        var dateNow = new Date();
+        var timeNow = dateNow.getTime();
+        // Sacamos la diferencia en minutos entre el momento del ultimo acceso y ahora
+        var lastAccessDiffMinutes = (timeNow - req.session.ultimoAcceso) * 1.6667 * Math.pow(10, -5);
+        if (lastAccessDiffMinutes > 2) {
+            // Han pasado mas de 2 minutos. Destruimos sesion
+            delete req.session.user;
+            delete req.session.ultimoAcceso;
+            req.session.errors = [{"message": 'Ha expirado la sesión. Vuelva a logarse, por favor. '}];
+            res.redirect('/login');
+        } else {
+            // No han pasado mas de 2 minutos. Actualizamos momento del ultimo acceso
+            req.session.ultimoAcceso = timeNow;
+        }
+    }
+    next();
+});
+
 app.use('/', routes);
 
 // catch 404 and forward to error handler

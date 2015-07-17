@@ -34,6 +34,12 @@ exports.create = function(req, res) {
 			username: user.username
 		};
 
+		// Guardamos en sesion el momento del acceso
+		// para controlar el autologout
+		var dateNow = new Date();
+        req.session.ultimoAcceso = dateNow.getTime();
+		
+
 		res.redirect(req.session.redir.toString());
 	});
 };
@@ -41,5 +47,6 @@ exports.create = function(req, res) {
 // GET /logout
 exports.destroy = function(req, res) {
 	delete req.session.user;
+	delete req.session.ultimoAcceso;
 	res.redirect(req.session.redir.toString());
 };
